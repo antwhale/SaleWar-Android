@@ -7,6 +7,8 @@ import io.github.antwhale.salewar.data.room.dao.FavoriteProductDao
 import io.github.antwhale.salewar.data.room.dao.LastFetchInfoDao
 import io.github.antwhale.salewar.data.room.dao.ProductDao
 import io.github.antwhale.salewar.data.room.entity.LastFetchInfo
+import io.github.antwhale.salewar.data.room.entity.Product
+import io.github.antwhale.salewar.data.vo.StoreType
 import kotlinx.coroutines.flow.Flow
 
 object RoomManager {
@@ -27,7 +29,27 @@ object RoomManager {
         favoriteProductDao = db.favoriteProductDao()
     }
 
-    suspend fun getLastFetchDate() : List<LastFetchInfo> = lastFetchInfoDao.getAll()
+    suspend fun getLastFetchDate() : String {
+        val lastFetchInfos = lastFetchInfoDao.getAll()
+        if(lastFetchInfos.isNotEmpty()) {
+            return lastFetchInfos[0].date
+        } else {
+            return ""
+        }
+    }
+
+    suspend fun deleteProducts(forStore: StoreType) {
+        productDao.deleteProductsByStore(forStore.rawValue)
+    }
+
+    suspend fun addProducts(products: List<Product>) {
+        productDao.insertProducts(products)
+    }
+
+    suspend fun saveSaleInfoUpdateDate(info: LastFetchInfo){
+        Log.d(TAG, "saveSaleInfoUpdateDate, date: ${info.date}")
+        lastFetchInfoDao.insertLastFetchInfo(info)
+    }
 
     fun release() {
         Log.d(TAG, "release: ")

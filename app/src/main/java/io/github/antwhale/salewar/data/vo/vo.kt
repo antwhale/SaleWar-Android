@@ -1,6 +1,7 @@
 package io.github.antwhale.salewar.data.vo
 
 import io.github.antwhale.salewar.R
+import io.github.antwhale.salewar.data.room.entity.Product
 
 enum class SaleWarTab {
     gs25, cu, seven_eleven
@@ -54,16 +55,16 @@ data class ProductJSON(
     val saleFlag: String
 )
 
-data class ProductInfo(
-    val img: String,
-    val title: String,
-    val price: String,
-    val saleFlag: String,
-    val store: String
-)
+//data class ProductInfo(
+//    val img: String,
+//    val title: String,
+//    val price: String,
+//    val saleFlag: String,
+//    val store: String
+//)
 
-fun ProductJSON.toProductInfo(store: String): ProductInfo {
-    return ProductInfo(
+fun ProductJSON.toProduct(store: String): Product {
+    return Product(
         img = this.img,
         title = this.title,
         price = this.price,

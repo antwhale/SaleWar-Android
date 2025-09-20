@@ -23,6 +23,8 @@ class IntroActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        introViewModel.checkProductVersion()
+
         enableEdgeToEdge()
         setContent {
             SaleWarTheme {
