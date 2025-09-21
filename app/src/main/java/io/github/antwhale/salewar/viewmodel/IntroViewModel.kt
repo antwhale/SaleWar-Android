@@ -1,11 +1,15 @@
 package io.github.antwhale.salewar.viewmodel
 
 import android.app.Application
+import android.content.Intent
 import android.util.Log
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
+import androidx.room.Room
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.antwhale.salewar.MainActivity
 import io.github.antwhale.salewar.data.room.RoomManager
 import io.github.antwhale.salewar.data.room.entity.LastFetchInfo
 import io.github.antwhale.salewar.data.vo.PRODUCT_VERSION_URL
@@ -13,6 +17,7 @@ import io.github.antwhale.salewar.data.vo.ProductJSON
 import io.github.antwhale.salewar.data.vo.StoreType
 import io.github.antwhale.salewar.data.vo.toProduct
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
@@ -28,9 +33,7 @@ import java.util.Date
 class IntroViewModel @Inject constructor(application: Application) : AndroidViewModel(application) {
     val TAG = "IntroViewModel"
 
-    init {
-//        checkProductVersion()
-    }
+    val fetchingFlag = MutableStateFlow(true)
 
     fun checkProductVersion() {
         Log.d(TAG, "checkProductVersion")
@@ -53,14 +56,18 @@ class IntroViewModel @Inject constructor(application: Application) : AndroidView
                 val needToUpdate = checkUpdate(serverDate, newDate)
                 if(needToUpdate) {
                     initAllSaleInfo()
+
                 } else {
                     Log.d(TAG, "Don't need to update sale info")
                     //메인화면 진입
                 }
 
+                fetchingFlag.value = false
             }
         }
     }
+
+
 
     private suspend fun initAllSaleInfo() {
         Log.d(TAG, "initAllSaleInfo")
@@ -100,7 +107,6 @@ class IntroViewModel @Inject constructor(application: Application) : AndroidView
                 ignoreUnknownKeys = true
                 prettyPrint = true
                 encodeDefaults = true
-                namingStrategy = kotlinx.serialization.json.JsonNamingStrategy.SnakeCase
             }
 
             val productJSONs = json.decodeFromString<List<ProductJSON>>(String(data))
@@ -132,7 +138,16 @@ class IntroViewModel @Inject constructor(application: Application) : AndroidView
     suspend fun updateFavoriteProducts() {
         Log.d(TAG, "updateFavoriteProducts")
 
+        val favoriteProductList = RoomManager.getFavoriteProducts()
+        for(favoriteProduct in favoriteProductList) {
+            val productToUpdate = RoomManager.isSaleProduct(favoriteProduct)
 
+            if(productToUpdate != null) {
+                RoomManager.updateFavoriteProduct(favoriteProduct.title, productToUpdate.img, productToUpdate.price, productToUpdate.saleFlag)
+            } else {
+                RoomManager.updateFavoriteProduct(favoriteProduct.title, favoriteProduct.img, favoriteProduct.price, "")
+            }
+        }
     }
 
     suspend fun readUrlContent(urlString: String): String? {

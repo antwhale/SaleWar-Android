@@ -27,4 +27,7 @@ interface ProductDao {
 
     @Query("SELECT * FROM product WHERE title LIKE '%' || :title || '%' AND store = :store")
     fun searchProductsByTitleAndStore(title: String, store: String): Flow<List<Product>>
+
+    @Query("SELECT * FROM Product WHERE title = :productTitle LIMIT 1")
+    suspend fun isSaleProduct(productTitle: String): Product?
 }

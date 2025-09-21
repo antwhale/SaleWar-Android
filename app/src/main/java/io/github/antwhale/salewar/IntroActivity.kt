@@ -1,6 +1,8 @@
 package io.github.antwhale.salewar
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -11,9 +13,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.application
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.antwhale.salewar.ui.theme.SaleWarTheme
 import io.github.antwhale.salewar.viewmodel.IntroViewModel
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class IntroActivity : ComponentActivity() {
@@ -24,6 +31,16 @@ class IntroActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         introViewModel.checkProductVersion()
+
+        lifecycleScope.launch {
+            introViewModel.fetchingFlag
+                .drop(1)
+                .collect{ fetching ->
+                    if(fetching == false) {
+                        goToMainActivity()
+                    }
+                }
+        }
 
         enableEdgeToEdge()
         setContent {
@@ -37,5 +54,14 @@ class IntroActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private fun goToMainActivity() {
+        Log.d(TAG, "goToMainActivity")
+
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        ContextCompat.startActivity(this, intent, null)
+        finish()
     }
 }

@@ -2,6 +2,7 @@ package io.github.antwhale.salewar.data.vo
 
 import io.github.antwhale.salewar.R
 import io.github.antwhale.salewar.data.room.entity.Product
+import kotlinx.serialization.Serializable
 
 enum class SaleWarTab {
     gs25, cu, seven_eleven
@@ -48,6 +49,7 @@ enum class StoreType(val rawValue: String) {
     }
 }
 
+@Serializable
 data class ProductJSON(
     val img: String,
     val title: String,

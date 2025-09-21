@@ -6,6 +6,7 @@ import androidx.room.Room
 import io.github.antwhale.salewar.data.room.dao.FavoriteProductDao
 import io.github.antwhale.salewar.data.room.dao.LastFetchInfoDao
 import io.github.antwhale.salewar.data.room.dao.ProductDao
+import io.github.antwhale.salewar.data.room.entity.FavoriteProduct
 import io.github.antwhale.salewar.data.room.entity.LastFetchInfo
 import io.github.antwhale.salewar.data.room.entity.Product
 import io.github.antwhale.salewar.data.vo.StoreType
@@ -46,9 +47,21 @@ object RoomManager {
         productDao.insertProducts(products)
     }
 
+    suspend fun getFavoriteProducts() : List<FavoriteProduct> {
+        return favoriteProductDao.getAll()
+    }
+
+    suspend fun isSaleProduct(product: FavoriteProduct) : Product? {
+        return productDao.isSaleProduct(product.title)
+    }
+
     suspend fun saveSaleInfoUpdateDate(info: LastFetchInfo){
         Log.d(TAG, "saveSaleInfoUpdateDate, date: ${info.date}")
         lastFetchInfoDao.insertLastFetchInfo(info)
+    }
+
+    suspend fun updateFavoriteProduct(productTitle: String, newImg: String, newPrice: String, newSaleFlag: String) {
+        favoriteProductDao.updateFavoriteProduct(productTitle, newImg, newPrice, newSaleFlag)
     }
 
     fun release() {
