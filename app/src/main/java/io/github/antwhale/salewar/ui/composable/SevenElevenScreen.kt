@@ -31,6 +31,7 @@ fun SevenElevenScreen(modifier: Modifier, sevenElevenViewModel: SevenElevenViewM
     val searchKeyword by sevenElevenViewModel.searchKeyword.collectAsState()
 
     val selectedProduct by sevenElevenViewModel.selectedProduct.collectAsState()
+    val isSelectedProductFavorite by sevenElevenViewModel.isSelectedProductFavorite.collectAsState()
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(Modifier.height(16.dp))
@@ -76,9 +77,16 @@ fun SevenElevenScreen(modifier: Modifier, sevenElevenViewModel: SevenElevenViewM
         selectedProduct?.let { product ->
             ProductDetailDialog(
                 product = product,
-                isFavorite = false,
+                isFavorite = isSelectedProductFavorite,
+                // When the dialog is dismissed (e.g., by clicking the button), set the state back to null
                 onDismiss = { sevenElevenViewModel.selectedProduct.value = null },
-                onToggledFavorite = {  }
+                onToggledFavorite = {
+                    if(isSelectedProductFavorite) {
+                        sevenElevenViewModel.deleteFavoriteProduct(product)
+                    } else {
+                        sevenElevenViewModel.addFavoriteProduct(product)
+                    }
+                }
             )
         }
     }

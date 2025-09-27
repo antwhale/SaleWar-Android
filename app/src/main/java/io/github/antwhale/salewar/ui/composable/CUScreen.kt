@@ -31,6 +31,7 @@ fun CUScreen(modifier: Modifier, cuViewModel: CUViewModel) {
     val searchKeyword by cuViewModel.searchKeyword.collectAsState()
 
     val selectedProduct by cuViewModel.selectedProduct.collectAsState()
+    val isSelectedProductFavorite by cuViewModel.isSelectedProductFavorite.collectAsState()
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(Modifier.height(16.dp))
@@ -75,10 +76,16 @@ fun CUScreen(modifier: Modifier, cuViewModel: CUViewModel) {
         selectedProduct?.let { product ->
             ProductDetailDialog(
                 product = product,
-                isFavorite = false,
+                isFavorite = isSelectedProductFavorite,
                 // When the dialog is dismissed (e.g., by clicking the button), set the state back to null
                 onDismiss = { cuViewModel.selectedProduct.value = null },
-                onToggledFavorite = {}
+                onToggledFavorite = {
+                    if(isSelectedProductFavorite) {
+                        cuViewModel.deleteFavoriteProduct(product)
+                    } else {
+                        cuViewModel.addFavoriteProduct(product)
+                    }
+                }
             )
         }
     }
