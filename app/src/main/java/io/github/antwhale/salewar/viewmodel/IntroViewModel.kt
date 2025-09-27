@@ -67,8 +67,6 @@ class IntroViewModel @Inject constructor(application: Application) : AndroidView
         }
     }
 
-
-
     private suspend fun initAllSaleInfo() {
         Log.d(TAG, "initAllSaleInfo")
 

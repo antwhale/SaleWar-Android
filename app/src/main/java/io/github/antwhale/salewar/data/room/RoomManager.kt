@@ -14,10 +14,10 @@ import kotlinx.coroutines.flow.Flow
 
 object RoomManager {
     val TAG = "RoomManager"
-    lateinit var db : AppDatabase
-    lateinit var productDao: ProductDao
-    lateinit var lastFetchInfoDao: LastFetchInfoDao
-    lateinit var favoriteProductDao: FavoriteProductDao
+    private lateinit var db : AppDatabase
+    private lateinit var productDao: ProductDao
+    private lateinit var lastFetchInfoDao: LastFetchInfoDao
+    private lateinit var favoriteProductDao: FavoriteProductDao
 
     fun initialize(context: Context) {
         Log.d(TAG, "initialize")
@@ -39,6 +39,16 @@ object RoomManager {
         }
     }
 
+    fun getProductsByStore(store: String): Flow<List<Product>>{
+        return productDao.getProductsByStore(store)
+    }
+    fun searchProductsByTitleAndStore(keyword: String , store: String) : Flow<List<Product>> {
+        return productDao.searchProductsByTitleAndStore(
+            title = keyword,
+            store = store
+        )
+    }
+
     suspend fun deleteProducts(forStore: StoreType) {
         productDao.deleteProductsByStore(forStore.rawValue)
     }
@@ -49,6 +59,10 @@ object RoomManager {
 
     suspend fun getFavoriteProducts() : List<FavoriteProduct> {
         return favoriteProductDao.getAll()
+    }
+
+    fun isFavoriteProduct(productTitle: String) : Flow<Boolean> {
+        return favoriteProductDao.isFavoriteProduct(productTitle)
     }
 
     suspend fun isSaleProduct(product: FavoriteProduct) : Product? {
@@ -62,6 +76,14 @@ object RoomManager {
 
     suspend fun updateFavoriteProduct(productTitle: String, newImg: String, newPrice: String, newSaleFlag: String) {
         favoriteProductDao.updateFavoriteProduct(productTitle, newImg, newPrice, newSaleFlag)
+    }
+
+    suspend fun addFavoriteProduct(product: FavoriteProduct) {
+        favoriteProductDao.addFavoriteProduct(product)
+    }
+
+    suspend fun deleteFavoriteProduct(favoriteProductTitle: String) {
+        favoriteProductDao.deleteFavoriteProduct(favoriteProductTitle)
     }
 
     fun release() {

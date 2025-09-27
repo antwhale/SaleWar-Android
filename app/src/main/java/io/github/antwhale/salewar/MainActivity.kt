@@ -41,7 +41,9 @@ import io.github.antwhale.salewar.ui.composable.CUScreen
 import io.github.antwhale.salewar.ui.composable.GS25Screen
 import io.github.antwhale.salewar.ui.composable.SevenElevenScreen
 import io.github.antwhale.salewar.ui.theme.SaleWarTheme
+import io.github.antwhale.salewar.viewmodel.CUViewModel
 import io.github.antwhale.salewar.viewmodel.GS25ViewModel
+import io.github.antwhale.salewar.viewmodel.SevenElevenViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -82,11 +84,13 @@ fun AppNavigation() {
                 val gS25ViewModel = hiltViewModel<GS25ViewModel>(backStackEntry)
                 GS25Screen(Modifier.fillMaxSize(), gS25ViewModel)
             }
-            composable(StoreType.CU.rawValue) {
-                CUScreen(Modifier.fillMaxSize())
+            composable(StoreType.CU.rawValue) { backStackEntry ->
+                val cuViewModel = hiltViewModel<CUViewModel>(backStackEntry)
+                CUScreen(Modifier.fillMaxSize(), cuViewModel)
             }
-            composable(StoreType.SEVEN_ELEVEN.rawValue) {
-                SevenElevenScreen(Modifier.fillMaxSize())
+            composable(StoreType.SEVEN_ELEVEN.rawValue) { backStackEntry ->
+                val sevenElevenViewModel = hiltViewModel<SevenElevenViewModel>(backStackEntry)
+                SevenElevenScreen(Modifier.fillMaxSize(), sevenElevenViewModel)
             }
         }
     }

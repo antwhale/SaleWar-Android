@@ -42,7 +42,6 @@ fun SaleWarTitleBar(modifier: Modifier) {
             ),
             text = "세일 전쟁")
 
-
         Button(
             onClick = {
                 // This is where you would place your click logic, like a log statement or a function call.
@@ -51,7 +50,7 @@ fun SaleWarTitleBar(modifier: Modifier) {
                 // onClickFavoriteMenu()
             },
             modifier = Modifier
-                .padding(end = 8.dp)
+                .padding(end = 16.dp)
                 .align(Alignment.CenterEnd)
                 .size(30.dp) // Sets the frame size of the button
                 .background(Color.Unspecified) // We set the background inside the Button's content to clip correctly.
@@ -73,6 +72,7 @@ fun SaleWarTitleBar(modifier: Modifier) {
             )
 
         }
+
 
     }
 }

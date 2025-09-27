@@ -24,7 +24,9 @@ import io.github.antwhale.salewar.ui.theme.Yellow
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SaleWarSearchBar(
-    modifier : Modifier
+    modifier : Modifier,
+    onTextChanged : (String) -> Unit,
+    searchKeyword: String
 ) {
     Row(
         modifier = modifier
@@ -40,9 +42,9 @@ fun SaleWarSearchBar(
         )
 
         TextField(
-            value = "",
+            value = searchKeyword,
             onValueChange = { newText ->
-//                searchText.value = newText
+                onTextChanged.invoke(newText)
             },
             placeholder = { Text("Search", color = Color.White) },
             modifier = Modifier
@@ -52,7 +54,8 @@ fun SaleWarSearchBar(
                 containerColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-//                textColor = Color.White,
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
                 cursorColor = Color.White
             ),
             singleLine = true
@@ -64,6 +67,6 @@ fun SaleWarSearchBar(
 @Composable
 fun SaleWarSearchBarPreview() {
     SaleWarTheme {
-        SaleWarSearchBar(Modifier)
+        SaleWarSearchBar(Modifier, {}, "")
     }
 }
