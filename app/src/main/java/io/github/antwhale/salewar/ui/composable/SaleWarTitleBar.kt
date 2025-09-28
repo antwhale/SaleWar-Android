@@ -31,7 +31,7 @@ import io.github.antwhale.salewar.ui.theme.Orange
 import io.github.antwhale.salewar.ui.theme.SaleWarTheme
 
 @Composable
-fun SaleWarTitleBar(modifier: Modifier) {
+fun SaleWarTitleBar(modifier: Modifier, onClickFavoriteMenu: () -> Unit) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
 
         Text(
@@ -44,10 +44,8 @@ fun SaleWarTitleBar(modifier: Modifier) {
 
         Button(
             onClick = {
-                // This is where you would place your click logic, like a log statement or a function call.
-                // For example:
                  Log.d("SaleWarTitleBar", "click favorite icon")
-                // onClickFavoriteMenu()
+                 onClickFavoriteMenu.invoke()
             },
             modifier = Modifier
                 .padding(end = 16.dp)
@@ -81,6 +79,6 @@ fun SaleWarTitleBar(modifier: Modifier) {
 @Composable
 fun GreetingPreview() {
     SaleWarTheme {
-        SaleWarTitleBar(Modifier.fillMaxWidth())
+        SaleWarTitleBar(Modifier.fillMaxWidth(), {})
     }
 }

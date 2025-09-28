@@ -61,6 +61,9 @@ object RoomManager {
         return favoriteProductDao.getAll()
     }
 
+    fun getFavoriteProductsByFlow() : Flow<List<FavoriteProduct>> = favoriteProductDao.getAllByFlow()
+
+
     fun isFavoriteProduct(productTitle: String) : Flow<Boolean> {
         return favoriteProductDao.isFavoriteProduct(productTitle)
     }

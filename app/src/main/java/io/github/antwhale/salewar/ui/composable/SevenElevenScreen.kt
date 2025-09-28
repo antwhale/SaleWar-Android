@@ -39,7 +39,8 @@ fun SevenElevenScreen(modifier: Modifier, sevenElevenViewModel: SevenElevenViewM
         SaleWarTitleBar(
             Modifier
                 .fillMaxWidth()
-                .wrapContentHeight()
+                .wrapContentHeight(),
+            onClickFavoriteMenu = {}
         )
 
         Spacer(Modifier.height(16.dp))

@@ -19,9 +19,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -66,6 +65,34 @@ class GS25ViewModel @Inject constructor(application: Application) : AndroidViewM
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = false
         )
+    val showingFavoriteList = MutableStateFlow(false)
+
+    val favoriteProducts = RoomManager
+        .getFavoriteProductsByFlow()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
+//@OptIn(ExperimentalCoroutinesApi::class)
+//val favoriteProducts: StateFlow<List<FavoriteProduct>> = showingFavoriteList
+//        .flatMapLatest { isShow ->
+//            if(isShow) {
+//                flow {
+//                    emit(RoomManager.getFavoriteProducts())
+//                }
+//            } else {
+//                flow {
+//                    emptyList<FavoriteProduct>()
+//                }
+//            }
+//        }
+//        .stateIn(
+//            scope = viewModelScope,
+//            started = SharingStarted.WhileSubscribed(5000),
+//            initialValue = emptyList()
+//        )
 
     fun addFavoriteProduct(product: Product) {
         viewModelScope.launch(Dispatchers.IO) {

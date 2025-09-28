@@ -39,7 +39,9 @@ fun CUScreen(modifier: Modifier, cuViewModel: CUViewModel) {
         SaleWarTitleBar(
             Modifier
                 .fillMaxWidth()
-                .wrapContentHeight())
+                .wrapContentHeight(),
+            onClickFavoriteMenu = {}
+        )
 
         Spacer(Modifier.height(16.dp))
 

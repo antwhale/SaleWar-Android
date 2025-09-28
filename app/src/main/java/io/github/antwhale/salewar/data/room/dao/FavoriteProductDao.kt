@@ -15,6 +15,9 @@ interface FavoriteProductDao {
     @Query("SELECT * FROM FavoriteProduct")
     suspend fun getAll() : List<FavoriteProduct>
 
+    @Query("SELECT * FROM FavoriteProduct")
+    fun getAllByFlow() : Flow<List<FavoriteProduct>>
+
     @Query("UPDATE favoriteproduct SET img = :newImg, price = :newPrice, saleFlag = :newSaleFlag WHERE title = :productTitle")
     suspend fun updateFavoriteProduct(productTitle: String, newImg: String, newPrice: String, newSaleFlag: String): Int
 

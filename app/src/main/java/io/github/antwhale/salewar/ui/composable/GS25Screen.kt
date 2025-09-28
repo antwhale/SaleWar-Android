@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,10 +25,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.github.antwhale.salewar.data.room.entity.Product
 import io.github.antwhale.salewar.ui.theme.SaleWarTheme
 import io.github.antwhale.salewar.viewmodel.GS25ViewModel
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GS25Screen(modifier: Modifier, gs25ViewModel: GS25ViewModel) {
     val TAG = "GS25Screen"
@@ -36,13 +40,22 @@ fun GS25Screen(modifier: Modifier, gs25ViewModel: GS25ViewModel) {
     val selectedProduct by gs25ViewModel.selectedProduct.collectAsState()
     val isSelectedProductFavorite by gs25ViewModel.isSelectedProductFavorite.collectAsState()
 
+    val showingFavoriteList by gs25ViewModel.showingFavoriteList.collectAsState()
+    val favoriteProducts by gs25ViewModel.favoriteProducts.collectAsState()
+
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true // Allows the sheet to stop at a half-expanded state
+    )
+
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(Modifier.height(16.dp))
 
         SaleWarTitleBar(
             Modifier
                 .fillMaxWidth()
-                .wrapContentHeight())
+                .wrapContentHeight(),
+            onClickFavoriteMenu = {gs25ViewModel.showingFavoriteList.value = true}
+        )
 
         Spacer(Modifier.height(16.dp))
 
@@ -89,6 +102,15 @@ fun GS25Screen(modifier: Modifier, gs25ViewModel: GS25ViewModel) {
                         gs25ViewModel.addFavoriteProduct(product)
                     }
                 }
+            )
+        }
+
+        if(showingFavoriteList){
+            FavoriteProductList(
+                favoriteProducts = favoriteProducts,
+                sheetState = sheetState,
+                onDeleteFavoriteProduct = { product -> gs25ViewModel.deleteFavoriteProduct(Product(img = product.img, title = product.title, price = product.price, saleFlag = product.saleFlag, store = product.store))},
+                onDismiss = { gs25ViewModel.showingFavoriteList.value = false }
             )
         }
     }
