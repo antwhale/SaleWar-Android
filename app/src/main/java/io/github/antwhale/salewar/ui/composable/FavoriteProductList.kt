@@ -175,7 +175,7 @@ fun FavoriteProductRow(product: FavoriteProduct) {
 
                 Row() {
                     Text(
-                        text = product.saleFlag,
+                        text = if(product.saleFlag == "") "행사 상품이 아닙니다" else product.saleFlag,
                         fontSize = 12.sp,
                         color = Color.White,
                         modifier = Modifier

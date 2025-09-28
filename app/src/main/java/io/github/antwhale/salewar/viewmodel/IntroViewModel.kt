@@ -56,10 +56,8 @@ class IntroViewModel @Inject constructor(application: Application) : AndroidView
                 val needToUpdate = checkUpdate(serverDate, newDate)
                 if(needToUpdate) {
                     initAllSaleInfo()
-
                 } else {
                     Log.d(TAG, "Don't need to update sale info")
-                    //메인화면 진입
                 }
 
                 fetchingFlag.value = false
