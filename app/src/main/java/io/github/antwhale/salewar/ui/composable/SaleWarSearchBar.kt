@@ -1,9 +1,12 @@
 package io.github.antwhale.salewar.ui.composable
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -48,16 +51,23 @@ fun SaleWarSearchBar(
             },
             placeholder = { Text("Search", color = Color.White) },
             modifier = Modifier
-                .weight(1f)
-                .padding(vertical = 10.dp, horizontal = 10.dp),
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
+                .weight(1f),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
+
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White,
-                cursorColor = Color.White
-            ),
+
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                cursorColor = Color.White,
+
+                focusedPlaceholderColor = Color.White.copy(alpha = 0.7f),
+                unfocusedPlaceholderColor = Color.White.copy(alpha = 0.7f)
+
+                ),
             singleLine = true
         )
     }
@@ -67,6 +77,6 @@ fun SaleWarSearchBar(
 @Composable
 fun SaleWarSearchBarPreview() {
     SaleWarTheme {
-        SaleWarSearchBar(Modifier, {}, "")
+        SaleWarSearchBar(Modifier, {}, "하나 둘 셋")
     }
 }

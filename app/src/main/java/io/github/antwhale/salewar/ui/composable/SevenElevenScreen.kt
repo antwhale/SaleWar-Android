@@ -51,8 +51,7 @@ fun SevenElevenScreen(modifier: Modifier, sevenElevenViewModel: SevenElevenViewM
 
         SaleWarSearchBar(
             Modifier
-                .fillMaxWidth()
-                .height(45.dp),
+                .fillMaxWidth(),
             onTextChanged = { text ->
                 sevenElevenViewModel.searchKeyword.value = text
             },

@@ -36,6 +36,7 @@ fun GS25Screen(modifier: Modifier, gs25ViewModel: GS25ViewModel) {
     val TAG = "GS25Screen"
     val gs25Products by gs25ViewModel.productList.collectAsState()
     val searchKeyword by gs25ViewModel.searchKeyword.collectAsState()
+    Log.d(TAG, "GS25Screen, searchKeyword: $searchKeyword")
 
     val selectedProduct by gs25ViewModel.selectedProduct.collectAsState()
     val isSelectedProductFavorite by gs25ViewModel.isSelectedProductFavorite.collectAsState()
@@ -66,7 +67,7 @@ fun GS25Screen(modifier: Modifier, gs25ViewModel: GS25ViewModel) {
         SaleWarSearchBar(
             Modifier
                 .fillMaxWidth()
-                .height(45.dp),
+                .wrapContentHeight(),
             onTextChanged = { text ->
                 gs25ViewModel.searchKeyword.value = text
             },
@@ -77,7 +78,9 @@ fun GS25Screen(modifier: Modifier, gs25ViewModel: GS25ViewModel) {
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
-            modifier = Modifier.fillMaxSize().padding(horizontal = 10.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 10.dp),
             verticalArrangement = Arrangement.spacedBy(15.dp),
             horizontalArrangement = Arrangement.spacedBy(15.dp)
         ) {

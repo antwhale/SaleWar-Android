@@ -51,8 +51,7 @@ fun CUScreen(modifier: Modifier, cuViewModel: CUViewModel) {
 
         SaleWarSearchBar(
             Modifier
-                .fillMaxWidth()
-                .height(45.dp),
+                .fillMaxWidth(),
             onTextChanged = { text ->
                 cuViewModel.searchKeyword.value = text
             },
