@@ -75,25 +75,6 @@ class GS25ViewModel @Inject constructor(application: Application) : AndroidViewM
             initialValue = emptyList()
         )
 
-//@OptIn(ExperimentalCoroutinesApi::class)
-//val favoriteProducts: StateFlow<List<FavoriteProduct>> = showingFavoriteList
-//        .flatMapLatest { isShow ->
-//            if(isShow) {
-//                flow {
-//                    emit(RoomManager.getFavoriteProducts())
-//                }
-//            } else {
-//                flow {
-//                    emptyList<FavoriteProduct>()
-//                }
-//            }
-//        }
-//        .stateIn(
-//            scope = viewModelScope,
-//            started = SharingStarted.WhileSubscribed(5000),
-//            initialValue = emptyList()
-//        )
-
     fun addFavoriteProduct(product: Product) {
         viewModelScope.launch(Dispatchers.IO) {
             Log.d(TAG, "updateFavoriteProduct, ${product.title}")

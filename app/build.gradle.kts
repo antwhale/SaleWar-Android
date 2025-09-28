@@ -55,7 +55,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
-
+    implementation(libs.androidx.splashscreen)
     implementation(libs.androidx.viewmodel)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.core.ktx)

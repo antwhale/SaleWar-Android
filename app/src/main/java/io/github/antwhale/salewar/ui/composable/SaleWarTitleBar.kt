@@ -36,7 +36,7 @@ fun SaleWarTitleBar(modifier: Modifier, onClickFavoriteMenu: () -> Unit) {
 
         Text(
             style = TextStyle(
-                color = Color.Black,
+//                color = Color.Black,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
             ),

@@ -61,6 +61,16 @@ class CUViewModel @Inject constructor(application: Application) : AndroidViewMod
             initialValue = false
         )
 
+    val showingFavoriteList = MutableStateFlow(false)
+
+    val favoriteProducts = RoomManager
+        .getFavoriteProductsByFlow()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
     fun addFavoriteProduct(product: Product) {
         viewModelScope.launch(Dispatchers.IO) {
             Log.d(TAG, "updateFavoriteProduct, ${product.title}")

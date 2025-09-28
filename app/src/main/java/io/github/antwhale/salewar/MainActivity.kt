@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -41,6 +42,7 @@ import io.github.antwhale.salewar.ui.composable.CUScreen
 import io.github.antwhale.salewar.ui.composable.GS25Screen
 import io.github.antwhale.salewar.ui.composable.SevenElevenScreen
 import io.github.antwhale.salewar.ui.theme.SaleWarTheme
+import io.github.antwhale.salewar.ui.theme.Yellow
 import io.github.antwhale.salewar.viewmodel.CUViewModel
 import io.github.antwhale.salewar.viewmodel.GS25ViewModel
 import io.github.antwhale.salewar.viewmodel.SevenElevenViewModel
@@ -105,7 +107,8 @@ fun BottomNavigationBar(navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .height(80.dp)
-            .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
+            .background(Yellow)
+            .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
     ){
         NavigationBar(containerColor = Color.White) {
             //GS25
