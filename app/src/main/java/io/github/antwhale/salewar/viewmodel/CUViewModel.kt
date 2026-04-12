@@ -15,6 +15,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -26,30 +27,51 @@ class CUViewModel @Inject constructor(application: Application) : AndroidViewMod
     val TAG = "CUViewModel"
 
     val searchKeyword = MutableStateFlow("")
+    val selectedCategory = MutableStateFlow("")
+    val cuProductCategories : MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
-    val productList: StateFlow<List<Product>> = searchKeyword
-        .debounce(300)
-        .flatMapLatest { keyword ->
-            Log.d(TAG, "Executing search query for keyword: $keyword")
+    val productList: StateFlow<List<Product>> = combine(
+        searchKeyword.debounce(300),
+        selectedCategory
+    ) { (keyword, category) ->
+        Pair(keyword, category)
+    }
+    .flatMapLatest { (keyword, category) ->
+        Log.d(TAG, "Executing search query for keyword: $keyword. selectedCategory: $category")
 
-            if(keyword.isEmpty()) {
+        if(keyword.isEmpty()) {
+            if(category.isEmpty() || category == "전체") {
                 RoomManager.getProductsByStore(StoreType.CU.rawValue)
             } else {
+                RoomManager.getProductsByStoreAndCategory(StoreType.CU.rawValue, category)
+            }
+        } else {
+            if(category.isEmpty() || category == "전체") {
                 RoomManager.searchProductsByTitleAndStore(
                     keyword = keyword,
                     store = StoreType.CU.rawValue
                 )
+            } else {
+                RoomManager.searchProducts(keyword, StoreType.CU.rawValue, category)
             }
-
         }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
+    }
+    .stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
 
     val selectedProduct = MutableStateFlow<Product?>(null)
+
+    suspend fun fetchCUCategories() {
+        Log.d(TAG, "fetchCUCategories")
+        val categories = listOf("전체") + RoomManager.getProductCategoriesByStore(StoreType.CU.rawValue)
+        cuProductCategories.value = categories
+        selectCategory("전체")
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val isSelectedProductFavorite = selectedProduct
         .flatMapLatest { product ->
@@ -74,7 +96,9 @@ class CUViewModel @Inject constructor(application: Application) : AndroidViewMod
     fun addFavoriteProduct(product: Product) {
         viewModelScope.launch(Dispatchers.IO) {
             Log.d(TAG, "updateFavoriteProduct, ${product.title}")
-            RoomManager.addFavoriteProduct(FavoriteProduct(img = product.img, title = product.title, price = product.price, saleFlag = product.saleFlag, store = product.store))
+            RoomManager.addFavoriteProduct(
+                FavoriteProduct(img = product.img, title = product.title, price = product.price, saleFlag = product.saleFlag, store = product.store, category = product.category, description = product.description)
+            )
         }
     }
 
@@ -83,5 +107,15 @@ class CUViewModel @Inject constructor(application: Application) : AndroidViewMod
             Log.d(TAG, "deleteFavoriteProduct, ${product.title}")
             RoomManager.deleteFavoriteProduct(product.title)
         }
+    }
+
+    fun selectCategory(category: String) {
+        Log.d(TAG, "selectCategory: $category")
+        selectedCategory.value = category
+    }
+
+    init {
+        Log.d(TAG, "init")
+
     }
 }

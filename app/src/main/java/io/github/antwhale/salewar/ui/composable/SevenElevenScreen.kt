@@ -1,6 +1,5 @@
 package io.github.antwhale.salewar.ui.composable
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +18,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.antwhale.salewar.data.room.entity.Product
 import io.github.antwhale.salewar.ui.theme.Yellow
+import io.github.antwhale.salewar.ui.theme.lightGray
 import io.github.antwhale.salewar.viewmodel.SevenElevenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,8 +48,19 @@ fun SevenElevenScreen(modifier: Modifier, sevenElevenViewModel: SevenElevenViewM
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true // Allows the sheet to stop at a half-expanded state
     )
+    val sevenElevenProductCategories by sevenElevenViewModel.sevenElevenProductCategories.collectAsState()
+    val selectedCategory by sevenElevenViewModel.selectedCategory.collectAsState()
 
-    Box(){
+    LaunchedEffect(Unit) {
+        sevenElevenViewModel.fetchSevenElevenCategories()
+    }
+
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .background(lightGray)
+    ){
         Box(Modifier.fillMaxWidth().fillMaxHeight(0.35f).align(Alignment.BottomCenter).background(
             Yellow
         ))
@@ -78,7 +90,18 @@ fun SevenElevenScreen(modifier: Modifier, sevenElevenViewModel: SevenElevenViewM
                 searchKeyword
             )
 
-            Spacer(Modifier.height(16.dp))
+            CategoryList(
+                categories = sevenElevenProductCategories,
+                selectedCategory = selectedCategory,
+                onCategorySelected = { category ->
+                    sevenElevenViewModel.selectCategory(category)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, end = 16.dp, start = 16.dp)
+            )
+
+            Spacer(Modifier.height(8.dp))
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),

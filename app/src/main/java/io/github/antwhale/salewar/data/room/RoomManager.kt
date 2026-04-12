@@ -24,7 +24,9 @@ object RoomManager {
         db = Room.databaseBuilder(
             context,
             AppDatabase::class.java, "app_database"
-        ).build()
+        )
+            .addMigrations(AppDatabase.MIGRATION_1_2)
+            .build()
         productDao = db.productDao()
         lastFetchInfoDao = db.lastFetchInfoDao()
         favoriteProductDao = db.favoriteProductDao()
@@ -32,6 +34,7 @@ object RoomManager {
 
     suspend fun getLastFetchDate() : String {
         val lastFetchInfos = lastFetchInfoDao.getAll()
+        Log.d(TAG, "lastFetchInfos: $lastFetchInfos")
         if(lastFetchInfos.isNotEmpty()) {
             return lastFetchInfos[0].date
         } else {
@@ -39,14 +42,28 @@ object RoomManager {
         }
     }
 
+    suspend fun deleteAllLastFetchInfo() {
+        Log.d(TAG, "deleteAllLastFetchInfo")
+        lastFetchInfoDao.deleteAll()
+    }
+
+
     fun getProductsByStore(store: String): Flow<List<Product>>{
         return productDao.getProductsByStore(store)
+    }
+
+    fun getProductsByStoreAndCategory(store: String, category: String): Flow<List<Product>> {
+        return productDao.getProductsByStoreAndCategory(store, category)
     }
     fun searchProductsByTitleAndStore(keyword: String , store: String) : Flow<List<Product>> {
         return productDao.searchProductsByTitleAndStore(
             title = keyword,
             store = store
         )
+    }
+
+    fun searchProducts(keyword: String, store: String, category: String): Flow<List<Product>> {
+        return productDao.searchProducts(keyword, store, category)
     }
 
     suspend fun deleteProducts(forStore: StoreType) {
@@ -72,13 +89,16 @@ object RoomManager {
         return productDao.isSaleProduct(product.title)
     }
 
+    suspend fun getProductCategoriesByStore(store: String) : List<String> {
+        return productDao.getProductCategoriesByStore(store)
+    }
     suspend fun saveSaleInfoUpdateDate(info: LastFetchInfo){
         Log.d(TAG, "saveSaleInfoUpdateDate, date: ${info.date}")
         lastFetchInfoDao.insertLastFetchInfo(info)
     }
 
-    suspend fun updateFavoriteProduct(productTitle: String, newImg: String, newPrice: String, newSaleFlag: String) {
-        favoriteProductDao.updateFavoriteProduct(productTitle, newImg, newPrice, newSaleFlag)
+    suspend fun updateFavoriteProduct(productTitle: String, newImg: String, newPrice: String, newSaleFlag: String, category: String, description: String) {
+        favoriteProductDao.updateFavoriteProduct(productTitle, newImg, newPrice, newSaleFlag, category, description)
     }
 
     suspend fun addFavoriteProduct(product: FavoriteProduct) {

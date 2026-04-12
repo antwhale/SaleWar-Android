@@ -1,8 +1,6 @@
 package io.github.antwhale.salewar.ui.theme
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import io.github.antwhale.salewar.R
 
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
@@ -17,3 +15,7 @@ val Yellow = Color(0xFFF5C941)
 
 val OnePlusOneColor = Color(0xFF2B5EE7)
 val TwoPlusOneColor = Color(0xFF69AF41)
+
+val unselectedCategoryBG = Color(0xFFDADADA)
+val unselectedCategoryTextColor = Color(0xFF8C8C8C)
+val lightGray = Color(0xFFE8E8E8)

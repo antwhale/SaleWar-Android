@@ -18,6 +18,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -30,22 +31,35 @@ class GS25ViewModel @Inject constructor(application: Application) : AndroidViewM
     val TAG = "GS25ViewModel"
 
     val searchKeyword = MutableStateFlow("")
+    val selectedCategory = MutableStateFlow("")
+
+    val gs25ProductCategories : MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
-    val productList: StateFlow<List<Product>> = searchKeyword
-        .debounce(300)
-        .flatMapLatest { keyword ->
-            Log.d(TAG, "Executing search query for keyword: $keyword")
+    val productList: StateFlow<List<Product>> = combine(
+        searchKeyword.debounce(300),
+        selectedCategory
+    ) { (keyword, category) ->
+        Pair(keyword, category)
+    }.flatMapLatest { (keyword, category) ->
+            Log.d(TAG, "Executing search query for keyword: $keyword, selectedCategory: $category")
 
             if(keyword.isEmpty()) {
-                RoomManager.getProductsByStore(StoreType.GS25.rawValue)
+                if(category.isEmpty() || category == "전체"){
+                    RoomManager.getProductsByStore(StoreType.GS25.rawValue)
+                } else {
+                    RoomManager.getProductsByStoreAndCategory(StoreType.GS25.rawValue, category)
+                }
             } else {
-                RoomManager.searchProductsByTitleAndStore(
-                    keyword = keyword,
-                    store = StoreType.GS25.rawValue
-                )
+                if(category.isEmpty() || category == "전체") {
+                    RoomManager.searchProductsByTitleAndStore(
+                        keyword = keyword,
+                        store = StoreType.GS25.rawValue
+                    )
+                } else {
+                    RoomManager.searchProducts(keyword, StoreType.GS25.rawValue, category)
+                }
             }
-
         }
         .stateIn(
             scope = viewModelScope,
@@ -54,6 +68,13 @@ class GS25ViewModel @Inject constructor(application: Application) : AndroidViewM
         )
 
     val selectedProduct = MutableStateFlow<Product?>(null)
+
+    suspend fun fetchGS25Categories() {
+        Log.d(TAG, "fetchGS25Categories")
+        val categories = listOf("전체") + RoomManager.getProductCategoriesByStore(StoreType.GS25.rawValue)
+        gs25ProductCategories.value = categories
+        selectCategory("전체")
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val isSelectedProductFavorite = selectedProduct
@@ -78,7 +99,9 @@ class GS25ViewModel @Inject constructor(application: Application) : AndroidViewM
     fun addFavoriteProduct(product: Product) {
         viewModelScope.launch(Dispatchers.IO) {
             Log.d(TAG, "updateFavoriteProduct, ${product.title}")
-            RoomManager.addFavoriteProduct(FavoriteProduct(img = product.img, title = product.title, price = product.price, saleFlag = product.saleFlag, store = product.store))
+            RoomManager.addFavoriteProduct(
+                FavoriteProduct(img = product.img, title = product.title, price = product.price, saleFlag = product.saleFlag, store = product.store, category = product.category, description = product.description)
+            )
         }
     }
 
@@ -87,6 +110,11 @@ class GS25ViewModel @Inject constructor(application: Application) : AndroidViewM
             Log.d(TAG, "deleteFavoriteProduct, ${product.title}")
             RoomManager.deleteFavoriteProduct(product.title)
         }
+    }
+
+    fun selectCategory(category: String) {
+        Log.d(TAG, "selectCategory: $category")
+        selectedCategory.value = category
     }
 
     init {

@@ -19,6 +19,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.antwhale.salewar.data.room.entity.Product
 import io.github.antwhale.salewar.ui.theme.Yellow
+import io.github.antwhale.salewar.ui.theme.lightGray
 import io.github.antwhale.salewar.viewmodel.CUViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,7 +50,19 @@ fun CUScreen(modifier: Modifier, cuViewModel: CUViewModel) {
         skipPartiallyExpanded = true // Allows the sheet to stop at a half-expanded state
     )
 
-    Box {
+    val cuProductCategories by cuViewModel.cuProductCategories.collectAsState()
+    val selectedCategory by cuViewModel.selectedCategory.collectAsState()
+
+    LaunchedEffect(Unit) {
+        cuViewModel.fetchCUCategories()
+    }
+
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .background(lightGray)
+    ) {
         Box(Modifier.fillMaxWidth().fillMaxHeight(0.35f).align(Alignment.BottomCenter).background(
             Yellow
         ))
@@ -78,7 +92,16 @@ fun CUScreen(modifier: Modifier, cuViewModel: CUViewModel) {
                 searchKeyword
             )
 
-            Spacer(Modifier.height(16.dp))
+            CategoryList(
+                categories = cuProductCategories,
+                selectedCategory = selectedCategory,
+                onCategorySelected = { category ->
+                    cuViewModel.selectCategory(category)
+                },
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp, end = 16.dp, start = 16.dp)
+            )
+
+            Spacer(Modifier.height(8.dp))
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),

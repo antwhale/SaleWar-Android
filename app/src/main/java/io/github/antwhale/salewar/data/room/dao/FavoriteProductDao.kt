@@ -18,8 +18,8 @@ interface FavoriteProductDao {
     @Query("SELECT * FROM FavoriteProduct")
     fun getAllByFlow() : Flow<List<FavoriteProduct>>
 
-    @Query("UPDATE favoriteproduct SET img = :newImg, price = :newPrice, saleFlag = :newSaleFlag WHERE title = :productTitle")
-    suspend fun updateFavoriteProduct(productTitle: String, newImg: String, newPrice: String, newSaleFlag: String): Int
+    @Query("UPDATE favoriteproduct SET img = :newImg, price = :newPrice, saleFlag = :newSaleFlag, category = :newCategory, description = :newDescription WHERE title = :productTitle")
+    suspend fun updateFavoriteProduct(productTitle: String, newImg: String, newPrice: String, newSaleFlag: String, newCategory: String, newDescription: String): Int
 
     @Query("SELECT EXISTS(SELECT 1 FROM FavoriteProduct WHERE title = :productTitle)")
     fun isFavoriteProduct(productTitle: String): Flow<Boolean>

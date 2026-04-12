@@ -11,7 +11,7 @@ enum class SaleWarTab {
 const val GS25_PRODUCT_URL = "https://raw.githubusercontent.com/antwhale/SaleWar/refs/heads/main/GS25_Product.json"
 const val CU_PRODUCT_URL = "https://raw.githubusercontent.com/antwhale/SaleWar/refs/heads/main/CU_Product.json"
 const val SEVEN_ELEVEN_PRODUCT_URL = "https://raw.githubusercontent.com/antwhale/SaleWar/refs/heads/main/SevenEleven_Product.json"
-const val PRODUCT_VERSION_URL = "https://raw.githubusercontent.com/antwhale/SaleWar/refs/heads/main/product_version"
+const val PRODUCT_VERSION_URL = "https://raw.githubusercontent.com/antwhale/SaleWar/refs/heads/main/android_version"
 
 
 enum class StoreType(val rawValue: String) {
@@ -19,11 +19,11 @@ enum class StoreType(val rawValue: String) {
     CU("CU"),
     SEVEN_ELEVEN("SevenEleven");
 
-    val rawJSONURL: String
-        get() = when (this) {
-            GS25 -> "https://raw.githubusercontent.com/antwhale/SaleWar/main/GS25_Product.json"
-            CU -> "https://raw.githubusercontent.com/antwhale/SaleWar/main/CU_Product.json"
-            SEVEN_ELEVEN -> "https://raw.githubusercontent.com/antwhale/SaleWar/main/SevenEleven_Product.json"
+    val resourceId: Int
+        get() = when(this) {
+            GS25 -> R.raw.gs25_product
+            CU -> R.raw.cu_product
+            SEVEN_ELEVEN -> R.raw.seveneleven_info
         }
 
     val brandLogo: Int
@@ -51,10 +51,12 @@ enum class StoreType(val rawValue: String) {
 
 @Serializable
 data class ProductJSON(
-    val img: String,
-    val title: String,
-    val price: String, // String to handle "4,000원"
-    val saleFlag: String
+    val img: String = "",
+    val title: String = "",
+    val price: String = "", // String to handle "4,000원"
+    val saleFlag: String = "",
+    val category: String = "",
+    val description: String = ""
 )
 
 //data class ProductInfo(
@@ -71,7 +73,9 @@ fun ProductJSON.toProduct(store: String): Product {
         title = this.title,
         price = this.price,
         saleFlag = this.saleFlag,
-        store = store
+        store = store,
+        category = this.category,
+        description = this.description
     )
 }
 

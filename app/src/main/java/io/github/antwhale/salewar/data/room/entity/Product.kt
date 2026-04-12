@@ -12,4 +12,6 @@ data class Product(
     @ColumnInfo(name = "price") val price: String,
     @ColumnInfo(name = "saleFlag") val saleFlag: String,
     @ColumnInfo(name = "store") val store: String,
+    @ColumnInfo(name = "category") val category: String = "",
+    @ColumnInfo(name = "description") val description: String = ""
 )

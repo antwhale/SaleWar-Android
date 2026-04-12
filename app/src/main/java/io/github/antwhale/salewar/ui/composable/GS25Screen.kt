@@ -19,11 +19,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import io.github.antwhale.salewar.data.room.entity.Product
 import io.github.antwhale.salewar.ui.theme.SaleWarTheme
 import io.github.antwhale.salewar.ui.theme.Yellow
+import io.github.antwhale.salewar.ui.theme.lightGray
 import io.github.antwhale.salewar.viewmodel.GS25ViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,8 +52,25 @@ fun GS25Screen(modifier: Modifier, gs25ViewModel: GS25ViewModel) {
         skipPartiallyExpanded = true // Allows the sheet to stop at a half-expanded state
     )
 
-    Box {
-        Box(Modifier.fillMaxWidth().fillMaxHeight(0.35f).align(Alignment.BottomCenter).background(Yellow)) {}
+    val gs25ProductCategories by gs25ViewModel.gs25ProductCategories.collectAsState()
+    val selectedCategory by gs25ViewModel.selectedCategory.collectAsState()
+
+    LaunchedEffect(Unit) {
+        gs25ViewModel.fetchGS25Categories()
+    }
+
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .background(lightGray)
+    ) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.35f)
+                .align(Alignment.BottomCenter)
+                .background(Yellow)) {}
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(Modifier.height(16.dp))
@@ -80,7 +98,18 @@ fun GS25Screen(modifier: Modifier, gs25ViewModel: GS25ViewModel) {
                 searchKeyword
             )
 
-            Spacer(Modifier.height(16.dp))
+            CategoryList(
+                categories = gs25ProductCategories,
+                selectedCategory = selectedCategory,
+                onCategorySelected = { category ->
+                    gs25ViewModel.selectCategory(category)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, end = 16.dp, start = 16.dp)
+            )
+
+            Spacer(Modifier.height(8.dp))
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
