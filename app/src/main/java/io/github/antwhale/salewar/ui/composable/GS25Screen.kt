@@ -148,7 +148,7 @@ fun GS25Screen(modifier: Modifier, gs25ViewModel: GS25ViewModel) {
                     favoriteProducts = favoriteProducts,
                     sheetState = sheetState,
                     onDeleteFavoriteProduct = { product -> gs25ViewModel.deleteFavoriteProduct(Product(img = product.img, title = product.title, price = product.price, saleFlag = product.saleFlag, store = product.store))},
-                    onDismiss = { gs25ViewModel.showingFavoriteList.value = false }
+                    onDismiss = { gs25ViewModel.showingFavoriteList.value = false },
                 )
             }
         }

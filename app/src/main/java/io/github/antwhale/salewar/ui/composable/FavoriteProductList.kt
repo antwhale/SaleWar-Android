@@ -1,5 +1,6 @@
 package io.github.antwhale.salewar.ui.composable
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,6 +23,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SwipeToDismiss
@@ -46,6 +49,7 @@ import io.github.antwhale.salewar.data.room.entity.FavoriteProduct
 import io.github.antwhale.salewar.data.vo.StoreType
 import io.github.antwhale.salewar.ui.theme.OnePlusOneColor
 import io.github.antwhale.salewar.ui.theme.TwoPlusOneColor
+import io.github.antwhale.salewar.ui.theme.Yellow
 import kotlinx.coroutines.CoroutineScope
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
@@ -55,7 +59,7 @@ fun FavoriteProductList(
     favoriteProducts: List<FavoriteProduct>,
     onDeleteFavoriteProduct: (FavoriteProduct) -> Unit,
     sheetState: SheetState,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     ModalBottomSheet(
         onDismissRequest = {
@@ -136,66 +140,90 @@ fun FavoriteProductRow(product: FavoriteProduct) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(150.dp),
+            .wrapContentHeight(),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            GlideImage(
-                model = product.img,
-                contentDescription = product.title,
-                contentScale = ContentScale.Fit,
+        Column() {
+            Row(
                 modifier = Modifier
-                    .size(100.dp) // Adjusted size
-                    .clip(RoundedCornerShape(8.dp))
-            )
-
-            Column(horizontalAlignment = Alignment.Start, modifier = Modifier.padding(start = 16.dp)) {
-                Text(
-                    text = product.title,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.Black,
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                GlideImage(
+                    model = product.img,
+                    contentDescription = product.title,
+                    contentScale = ContentScale.Fit,
                     modifier = Modifier
+                        .size(100.dp) // Adjusted size
+                        .clip(RoundedCornerShape(8.dp))
                 )
 
-                Spacer(Modifier.height(8.dp))
-
-                Text(
-                    text = product.price,
-                    color = Color.Gray,
-                    modifier = Modifier
-                )
-
-                Spacer(Modifier.height(8.dp))
-
-                Row() {
+                Column(horizontalAlignment = Alignment.Start, modifier = Modifier.padding(start = 16.dp)) {
                     Text(
-                        text = if(product.saleFlag == "") "행사 상품이 아닙니다" else product.saleFlag,
-                        fontSize = 12.sp,
-                        color = Color.White,
+                        text = product.title,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.Black,
                         modifier = Modifier
-                            .background(
-                                color = saleFlagBackgroundColor(flag = product.saleFlag),
-                                shape = RoundedCornerShape(5.dp)
-                            )
-                            .padding(horizontal = 6.dp, vertical = 3.dp)
                     )
 
+                    Spacer(Modifier.height(8.dp))
 
-                    Spacer(Modifier.weight(1f))
+                    Text(
+                        text = product.price,
+                        color = Color.Gray,
+                        modifier = Modifier
+                    )
 
-                    Image(modifier = Modifier.size(30.dp), painter = painterResource(id = StoreType.getBrandLogo(product.store)), contentDescription = product.store)
+                    Spacer(Modifier.height(8.dp))
+
+                    Row() {
+                        if(product.category.isNotEmpty()) {
+                            Text(
+                                text = product.category,
+                                fontSize = 12.sp,
+                                color = Color.White,
+                                modifier = Modifier
+                                    .background(color = Yellow, shape = RoundedCornerShape(5.dp))
+                                    .padding(horizontal = 6.dp, vertical = 3.dp)
+                            )
+                        }
+
+                        Spacer(Modifier.width(8.dp))
+
+                        Text(
+                            text = if(product.saleFlag == "") "행사 상품이 아닙니다" else product.saleFlag,
+                            fontSize = 12.sp,
+                            color = Color.White,
+                            modifier = Modifier
+                                .background(
+                                    color = saleFlagBackgroundColor(flag = product.saleFlag),
+                                    shape = RoundedCornerShape(5.dp)
+                                )
+                                .padding(horizontal = 6.dp, vertical = 3.dp)
+                        )
+
+                        Spacer(Modifier.weight(1f))
+
+                        Image(modifier = Modifier.size(30.dp), painter = painterResource(id = StoreType.getBrandLogo(product.store)), contentDescription = product.store)
+                    }
                 }
-
             }
 
-
+//            if (product.description.isNotEmpty()) {
+//                Log.d("FavoriteProductList", "description: ${product.description}")
+//                Spacer(Modifier.height(8.dp))
+//                Text(
+//                    text = product.description,
+//                    fontSize = 12.sp,
+//                    color = Color.Black,
+//                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+//                )
+//                Spacer(Modifier.height(8.dp))
+//            }
         }
+
     }
 }
 

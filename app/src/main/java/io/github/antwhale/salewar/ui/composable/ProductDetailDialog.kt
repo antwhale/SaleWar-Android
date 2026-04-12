@@ -1,8 +1,10 @@
 package io.github.antwhale.salewar.ui.composable
 
 import android.graphics.drawable.Icon
+import android.util.Log
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -17,12 +19,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,6 +47,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import io.github.antwhale.salewar.data.room.entity.Product
 import io.github.antwhale.salewar.ui.theme.OnePlusOneColor
 import io.github.antwhale.salewar.ui.theme.TwoPlusOneColor
+import io.github.antwhale.salewar.ui.theme.Yellow
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -77,81 +82,113 @@ fun ProductDetailDialog(
             Box(
                 modifier = Modifier
                     .fillMaxWidth(0.9f) // Approx width: geometry.size.width - 16
-                    .fillMaxHeight(0.33f) // Approx height: geometry.size.height * 0.33
                     .background(Color.White, RoundedCornerShape(10.dp))
                     .clip(RoundedCornerShape(10.dp))
                     .padding(16.dp),
-//                contentAlignment = Alignment.Center,
             ) {
-                // Content (HStack equivalent)
-                Row (
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    // Left Side: Image
-                    GlideImage(
-                        model = product.img,
-                        contentDescription = product.title,
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .size(150.dp) // Adjusted size
-                            .clip(RoundedCornerShape(8.dp))
-                    )
-
-                    Spacer(Modifier.width(16.dp))
-
-                    // Right Side: Details (VStack equivalent)
-                    Column(
-                        modifier = Modifier.weight(1f).fillMaxHeight(),
-                        horizontalAlignment = Alignment.Start,
-                        verticalArrangement = Arrangement.Center
+                Column(Modifier.padding(vertical = 30.dp)) {
+                    // Content (HStack equivalent)
+                    Row (
+                        modifier = Modifier.wrapContentHeight(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // Title
-                        Text(
-                            text = product.title,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = Color.Black,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
-
-                        Spacer(Modifier.height(8.dp))
-
-                        // Price
-                        Text(
-                            text = product.price,
-                            fontSize = 14.sp,
-                            color = Color.Gray
-                        )
-
-                        Spacer(Modifier.height(8.dp))
-
-                        // Sale Flag
-                        Text(
-                            text = product.saleFlag,
-                            fontSize = 12.sp,
-                            color = Color.White,
+                        // Left Side: Image
+                        GlideImage(
+                            model = product.img,
+                            contentDescription = product.title,
+                            contentScale = ContentScale.Fit,
                             modifier = Modifier
-                                .background(
-                                    color = saleFlagBackgroundColor(product.saleFlag),
-                                    shape = RoundedCornerShape(5.dp)
+                                .size(150.dp) // Adjusted size
+                                .clip(RoundedCornerShape(8.dp))
+                        )
+
+                        Spacer(Modifier.width(16.dp))
+
+                        // Right Side: Details (VStack equivalent)
+                        Column(
+                            modifier = Modifier.wrapContentHeight(),
+                            horizontalAlignment = Alignment.Start,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            // Title
+                            Text(
+                                text = product.title,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.Black,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
+
+                            Spacer(Modifier.height(8.dp))
+
+                            // Price
+                            Text(
+                                text = product.price,
+                                fontSize = 14.sp,
+                                color = Color.Gray
+                            )
+
+                            Spacer(Modifier.height(8.dp))
+
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                //카테고리 (saleFlag 왼쪽)
+                                if(product.category.isNotEmpty()) {
+                                    Text(
+                                        text = product.category,
+                                        fontSize = 12.sp,
+                                        color = Color.White,
+                                        modifier = Modifier
+                                            .background(color = Yellow, shape = RoundedCornerShape(5.dp))
+                                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                                    )
+                                    Spacer(Modifier.width(6.dp))
+                                }
+
+                                // Sale Flag
+                                Text(
+                                    text = product.saleFlag,
+                                    fontSize = 12.sp,
+                                    color = Color.White,
+                                    modifier = Modifier
+                                        .background(
+                                            color = saleFlagBackgroundColor(product.saleFlag),
+                                            shape = RoundedCornerShape(5.dp)
+                                        )
+                                        .padding(horizontal = 6.dp, vertical = 3.dp)
                                 )
-                                .padding(horizontal = 6.dp, vertical = 3.dp)
-                        )
+                            }
 
-                        Spacer(Modifier.height(8.dp))
+                            Spacer(Modifier.height(8.dp))
 
-                        // Favorite Icon
-                        Icon(
-                            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                            contentDescription = "Toggle Favorite",
-                            // Using a vibrant pink/red tint for favorite
-                            tint = if (isFavorite) Color(0xFFFF4081) else Color.Gray,
-                            modifier = Modifier
-                                .size(30.dp)
-                                .clickable(interactionSource = interactionSource, indication = ripple, onClick = { onToggledFavorite(product) })
+                            // Favorite Icon
+                            Icon(
+                                imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                                contentDescription = "Toggle Favorite",
+                                // Using a vibrant pink/red tint for favorite
+                                tint = if (isFavorite) Color(0xFFFF4081) else Color.Gray,
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .clickable(
+                                        interactionSource = interactionSource,
+                                        indication = ripple,
+                                        onClick = { onToggledFavorite(product) })
+                            )
+                        }
+                    }
+
+                    // 이미지 아래: 상품 설명 (Description)
+                    if (product.description.isNotEmpty()) {
+                        Log.d("ProductDetailDialog", "description: ${product.description}")
+                        Spacer(Modifier.height(16.dp))
+                        HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray)
+                        Spacer(Modifier.height(12.dp))
+                        Text(
+                            text = product.description,
+                            fontSize = 13.sp,
+                            color = Color.Black,
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
                 }
@@ -165,7 +202,11 @@ fun ProductDetailDialog(
                         .align(Alignment.TopEnd)
                         .size(30.dp)
                         .padding(top = 4.dp, end = 4.dp)
-                        .clickable(interactionSource = interactionSource, indication = ripple, onClick = onDismiss)
+                        .clickable(
+                            interactionSource = interactionSource,
+                            indication = ripple,
+                            onClick = onDismiss
+                        )
                 )
             }
         }
