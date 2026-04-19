@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GS25ViewModel @Inject constructor(application: Application) : AndroidViewModel(application){
+class GS25ViewModel @Inject constructor(application: Application) : AndroidViewModel(application) {
     val TAG = "GS25ViewModel"
 
     val searchKeyword = MutableStateFlow("")

@@ -40,7 +40,7 @@ fun SaleWarTitleBar(modifier: Modifier, onClickFavoriteMenu: () -> Unit) {
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
             ),
-            text = "세일 전쟁")
+            text = "편의점 할인")
 
         Button(
             onClick = {

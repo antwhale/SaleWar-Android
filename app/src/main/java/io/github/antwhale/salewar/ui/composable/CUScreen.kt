@@ -68,7 +68,9 @@ fun CUScreen(modifier: Modifier, cuViewModel: CUViewModel) {
         ))
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Spacer(Modifier.height(16.dp))
+            AdaptiveBanner()
+
+            Spacer(Modifier.height(8.dp))
 
             SaleWarTitleBar(
                 Modifier

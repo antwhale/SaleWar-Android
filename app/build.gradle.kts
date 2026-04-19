@@ -55,6 +55,7 @@ dependencies {
     annotationProcessor(libs.room.compiler)
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation(libs.admob)
 
     implementation(libs.androidx.splashscreen)
     implementation(libs.androidx.viewmodel)

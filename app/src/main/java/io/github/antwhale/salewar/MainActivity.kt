@@ -36,6 +36,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.ads.MobileAds
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.antwhale.salewar.data.vo.StoreType
 import io.github.antwhale.salewar.ui.composable.CUScreen
@@ -51,6 +52,8 @@ import io.github.antwhale.salewar.viewmodel.SevenElevenViewModel
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        MobileAds.initialize(this){}
 
         enableEdgeToEdge()
         setContent {

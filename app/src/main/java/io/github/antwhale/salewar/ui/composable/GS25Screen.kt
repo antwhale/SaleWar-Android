@@ -73,7 +73,9 @@ fun GS25Screen(modifier: Modifier, gs25ViewModel: GS25ViewModel) {
                 .background(Yellow)) {}
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Spacer(Modifier.height(16.dp))
+            AdaptiveBanner()
+
+            Spacer(Modifier.height(8.dp))
 
             SaleWarTitleBar(
                 Modifier

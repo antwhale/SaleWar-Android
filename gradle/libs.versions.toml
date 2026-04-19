@@ -16,6 +16,7 @@ glideCompose = "1.0.0-beta01"
 room = "2.7.2"
 viewmodelKtx = "2.9.3"
 splashscreen = "1.0.0"
+admob = "23.0.0"
 
 
 [libraries]
@@ -38,6 +39,7 @@ androidx-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-room = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room"}
+admob = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "admob"}
 
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
