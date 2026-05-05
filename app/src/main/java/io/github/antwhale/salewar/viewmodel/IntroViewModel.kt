@@ -60,6 +60,7 @@ class IntroViewModel @Inject constructor(application: Application) : AndroidView
                 Log.d(TAG, "needToUpdate: $needToUpdate")
 
                 if(needToUpdate) {
+                    RoomManager.deleteAllLastFetchInfo()
                     //업데이트 팝업
                     updateFlag.value = true
                     return@launch
@@ -73,7 +74,7 @@ class IntroViewModel @Inject constructor(application: Application) : AndroidView
 
                     Log.d(TAG, "dbDate: $dbDate, currentDate: $currentDate")
 
-                    if(dbDate != currentDate) {
+                    if(needToUpdateDBVersion(dbDate, currentDate)) {
                         Log.d(TAG, "Need to init Database")
                         initAllSaleInfo()
                     }
@@ -83,6 +84,10 @@ class IntroViewModel @Inject constructor(application: Application) : AndroidView
                 fetchingFlag.value = false
             }
         }
+    }
+
+    private fun needToUpdateDBVersion(dbVersion: String, nowVersion: String): Boolean {
+        return dbVersion < nowVersion
     }
 
     private suspend fun initAllSaleInfo() {
